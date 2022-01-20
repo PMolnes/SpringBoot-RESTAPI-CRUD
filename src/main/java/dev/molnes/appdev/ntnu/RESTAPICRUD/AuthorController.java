@@ -2,10 +2,7 @@ package dev.molnes.appdev.ntnu.RESTAPICRUD;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -37,20 +34,19 @@ public class AuthorController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Author> getAuthor(Integer id) {
+    public ResponseEntity<Author> getAuthor(@PathVariable Integer id) {
         ResponseEntity<Author> response;
         Author author = findAuthorById(id);
-
         if (author != null) {
-            response = new ResponseEntity<>(HttpStatus.OK);
+            response = new ResponseEntity<>(author, HttpStatus.OK);
         } else {
             response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return response;
     }
 
-    @PutMapping
-    public ResponseEntity<String> addAuthor(Author author) {
+    @PostMapping
+    public ResponseEntity<String> addAuthor(@RequestBody Author author) {
         ResponseEntity<String> response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         if (author != null && author.isValid()) {
             Author existingAuthor = findAuthorById(author.getId());
