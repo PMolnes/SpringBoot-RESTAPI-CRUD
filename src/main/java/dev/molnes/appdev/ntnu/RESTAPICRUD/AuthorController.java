@@ -1,10 +1,13 @@
 package dev.molnes.appdev.ntnu.RESTAPICRUD;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @RestController
@@ -30,5 +33,31 @@ public class AuthorController {
     @GetMapping("")
     public List<Author> getAll() {
         return authors;
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Author> getAuthor(Integer id) {
+        ResponseEntity<Author> response;
+        Author author = findAuthorById(id);
+
+        if (author != null) {
+            response = new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return response;
+    }
+
+    private Author findAuthorById(int id) {
+        Author foundAuthor = null;
+        Iterator<Author> it = authors.iterator();
+
+        while (it.hasNext() && foundAuthor == null) {
+            Author currentAuthor = it.next();
+            if (currentAuthor.getId() == id) {
+                foundAuthor = currentAuthor;
+            }
+        }
+        return foundAuthor;
     }
 }
