@@ -58,6 +58,24 @@ public class AuthorController {
         return response;
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable int id) {
+        ResponseEntity<String> response;
+        Author authorToDelete = findAuthorById(id);
+        if (authorToDelete != null) {
+            authors.remove(authorToDelete);
+            response = new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return response;
+    }
+
+    @PutMapping
+    public ResponseEntity<String> update(int id, @RequestBody Author author) {
+        return null;
+    }
+
     private Author findAuthorById(int id) {
         Author foundAuthor = null;
         Iterator<Author> it = authors.iterator();
