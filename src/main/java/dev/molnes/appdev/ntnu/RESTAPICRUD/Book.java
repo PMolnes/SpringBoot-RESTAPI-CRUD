@@ -19,7 +19,7 @@ public class Book {
      * @return true if id is greater than 1, false otherwise.
      */
     public boolean isValid() {
-        return id > 0;
+        return id > 0 && title != null && !title.equals("");
     }
 
     private void setId(int id) {

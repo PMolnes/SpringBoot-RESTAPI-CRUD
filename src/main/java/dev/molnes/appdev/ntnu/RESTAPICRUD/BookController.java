@@ -92,4 +92,28 @@ public class BookController {
         }
         return response;
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<String> update(@PathVariable int id, @RequestBody Book book) {
+        ResponseEntity<String> response;
+        String errorMessage = null;
+        Book existingbook = findBookById(id);
+        if (existingbook == null) {
+            errorMessage = "No book with id " + id + " found.";
+        }
+        if (book == null || !book.isValid()) {
+            errorMessage = "Wrong data in request body.";
+        } else if (book.getId() != id) {
+            errorMessage = "Book ID in the URL does not match the ID in JSON data.";
+        }
+
+        if (errorMessage == null) {
+            books.remove(existingbook);
+            books.add(book);
+            response = new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            response = new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+        }
+        return response;
+    }
 }
