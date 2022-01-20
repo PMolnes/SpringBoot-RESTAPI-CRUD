@@ -2,10 +2,7 @@ package dev.molnes.appdev.ntnu.RESTAPICRUD;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -68,5 +65,31 @@ public class BookController {
             }
         }
         return foundBook;
+    }
+
+    @PostMapping
+    public ResponseEntity<String> add(@RequestBody Book book) {
+        ResponseEntity<String> response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if (book != null && book.isValid()) {
+            Book existingBook = findBookById(book.getId());
+            if (existingBook == null) {
+                books.add(book);
+                response = new ResponseEntity<>(HttpStatus.OK);
+            }
+        }
+        return response;
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable int id) {
+        ResponseEntity<String> response;
+        Book book = findBookById(id);
+        if (book != null) {
+            books.remove(book);
+            response = new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return response;
     }
 }
