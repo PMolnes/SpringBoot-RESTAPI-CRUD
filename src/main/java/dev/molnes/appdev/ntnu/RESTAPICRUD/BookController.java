@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 @RestController
@@ -30,8 +31,11 @@ public class BookController {
     private void initializeData() {
         books = new ArrayList<>();
         Book book1 = new Book(1, "12 Rules For Life", 2018, 448);
+        book1.addAuthor(11);
         Book book2 = new Book(2, "Animal Farm", 1945, 112);
+        book2.addAuthor(10);
         Book book3 = new Book(3, "1984", 1949, 328);
+        book3.addAuthor(10);
         books.add(book1);
         books.add(book2);
         books.add(book3);
