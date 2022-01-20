@@ -14,6 +14,14 @@ public class Book {
         this.numberOfPages = numberOfPages;
     }
 
+    /**
+     * Check if this object is a valid book.
+     * @return true if id is greater than 1, false otherwise.
+     */
+    public boolean isValid() {
+        return id > 0;
+    }
+
     private void setId(int id) {
         this.id = id;
     }
