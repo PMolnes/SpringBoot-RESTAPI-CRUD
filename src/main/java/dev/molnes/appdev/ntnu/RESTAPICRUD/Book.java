@@ -30,19 +30,19 @@ public class Book {
         this.numberOfPages = numberOfPages;
     }
 
-    private int getId() {
+    public int getId() {
         return id;
     }
 
-    private String getTitle() {
+    public String getTitle() {
         return title;
     }
 
-    private int getYear() {
+    public int getYear() {
         return year;
     }
 
-    private int getNumberOfPages() {
+    public int getNumberOfPages() {
         return numberOfPages;
     }
 }

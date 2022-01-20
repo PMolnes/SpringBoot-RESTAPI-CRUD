@@ -10,7 +10,7 @@ public class AuthorController {
     private ArrayList<Author> authors;
 
     public AuthorController() {
-        this.authors = new ArrayList<>();
+        authors = new ArrayList<>();
         initializeData();
     }
     
