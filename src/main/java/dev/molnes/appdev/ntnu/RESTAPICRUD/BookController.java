@@ -97,8 +97,8 @@ public class BookController {
     public ResponseEntity<String> update(@PathVariable int id, @RequestBody Book book) {
         ResponseEntity<String> response;
         String errorMessage = null;
-        Book existingbook = findBookById(id);
-        if (existingbook == null) {
+        Book existingBook = findBookById(id);
+        if (existingBook == null) {
             errorMessage = "No book with id " + id + " found.";
         }
         if (book == null || !book.isValid()) {
@@ -108,7 +108,7 @@ public class BookController {
         }
 
         if (errorMessage == null) {
-            books.remove(existingbook);
+            books.remove(existingBook);
             books.add(book);
             response = new ResponseEntity<>(HttpStatus.OK);
         } else {

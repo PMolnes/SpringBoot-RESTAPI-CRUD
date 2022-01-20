@@ -71,9 +71,28 @@ public class AuthorController {
         return response;
     }
 
-    @PutMapping
-    public ResponseEntity<String> update(int id, @RequestBody Author author) {
-        return null;
+    @PutMapping("/{id}")
+    public ResponseEntity<String> update(@PathVariable int id, @RequestBody Author author) {
+        ResponseEntity<String> response;
+        String errorMessage = null;
+        Author existingAuthor = findAuthorById(id);
+        if (existingAuthor == null) {
+            errorMessage = "No author with id " + id + " found.";
+        }
+        if (author == null || !author.isValid()) {
+            errorMessage = "Wrong data in request body.";
+        } else if (author.getId() != id) {
+            errorMessage = "Author ID in the URL does not match the ID in JSON data.";
+        }
+
+        if (errorMessage == null) {
+            authors.remove(existingAuthor);
+            authors.add(author);
+            response = new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            response = new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+        }
+        return response;
     }
 
     private Author findAuthorById(int id) {
