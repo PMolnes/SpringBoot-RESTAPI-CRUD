@@ -1,10 +1,15 @@
 package dev.molnes.appdev.ntnu.RESTAPICRUD;
 
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 @RestController
+@RequestMapping("/authors")
 public class AuthorController {
 
     private ArrayList<Author> authors;
@@ -21,5 +26,66 @@ public class AuthorController {
         authors.add(author1);
         authors.add(author2);
         authors.add(author3);
+    }
+
+    @GetMapping("")
+    public List<Author> getAll() {
+        return authors;
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Author> getAuthor(@PathVariable Integer id) {
+        ResponseEntity<Author> response;
+        Author author = findAuthorById(id);
+        if (author != null) {
+            response = new ResponseEntity<>(author, HttpStatus.OK);
+        } else {
+            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return response;
+    }
+
+    @PostMapping
+    public ResponseEntity<String> addAuthor(@RequestBody Author author) {
+        ResponseEntity<String> response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if (author != null && author.isValid()) {
+            Author existingAuthor = findAuthorById(author.getId());
+            if (existingAuthor == null) {
+                authors.add(author);
+                response = new ResponseEntity<>(HttpStatus.OK);
+            }
+        }
+        return response;
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable int id) {
+        ResponseEntity<String> response;
+        Author authorToDelete = findAuthorById(id);
+        if (authorToDelete != null) {
+            authors.remove(authorToDelete);
+            response = new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return response;
+    }
+
+    @PutMapping
+    public ResponseEntity<String> update(int id, @RequestBody Author author) {
+        return null;
+    }
+
+    private Author findAuthorById(int id) {
+        Author foundAuthor = null;
+        Iterator<Author> it = authors.iterator();
+
+        while (it.hasNext() && foundAuthor == null) {
+            Author currentAuthor = it.next();
+            if (currentAuthor.getId() == id) {
+                foundAuthor = currentAuthor;
+            }
+        }
+        return foundAuthor;
     }
 }
