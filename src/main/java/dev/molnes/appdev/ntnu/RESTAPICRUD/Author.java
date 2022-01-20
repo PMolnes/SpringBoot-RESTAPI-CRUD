@@ -14,6 +14,10 @@ public class Author {
         this.birthYear = birthYear;
     }
 
+    public boolean isValid() {
+        return id > 0 && firstName != null && !firstName.equals("");
+    }
+
     public void setId(int id) {
         this.id = id;
     }

@@ -3,6 +3,7 @@ package dev.molnes.appdev.ntnu.RESTAPICRUD;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -44,6 +45,19 @@ public class AuthorController {
             response = new ResponseEntity<>(HttpStatus.OK);
         } else {
             response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return response;
+    }
+
+    @PutMapping
+    public ResponseEntity<String> addAuthor(Author author) {
+        ResponseEntity<String> response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if (author != null && author.isValid()) {
+            Author existingAuthor = findAuthorById(author.getId());
+            if (existingAuthor == null) {
+                authors.add(author);
+                response = new ResponseEntity<>(HttpStatus.OK);
+            }
         }
         return response;
     }
