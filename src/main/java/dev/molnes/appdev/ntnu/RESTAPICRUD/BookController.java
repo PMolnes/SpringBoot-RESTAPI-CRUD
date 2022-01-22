@@ -42,8 +42,18 @@ public class BookController {
     }
 
     @GetMapping("")
-    public List<Book> getAll() {
-        return books;
+    public List<Book> getAll(@RequestParam(value = "authorId", required = false) Integer authorId) {
+        List<Book> booksToReturn = new ArrayList<>();
+        if (authorId != null) {
+            for (Book book : books) {
+                if (book.getAuthors().contains(authorId)) {
+                    booksToReturn.add(book);
+                }
+            }
+        } else {
+            booksToReturn = books;
+        }
+        return booksToReturn;
     }
 
     @GetMapping("/{id}")
