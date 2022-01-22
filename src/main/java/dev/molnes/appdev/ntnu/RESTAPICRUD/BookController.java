@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 @RestController
@@ -30,16 +31,29 @@ public class BookController {
     private void initializeData() {
         books = new ArrayList<>();
         Book book1 = new Book(1, "12 Rules For Life", 2018, 448);
+        book1.addAuthor(11);
         Book book2 = new Book(2, "Animal Farm", 1945, 112);
+        book2.addAuthor(10);
         Book book3 = new Book(3, "1984", 1949, 328);
+        book3.addAuthor(10);
         books.add(book1);
         books.add(book2);
         books.add(book3);
     }
 
     @GetMapping("")
-    public List<Book> getAll() {
-        return books;
+    public List<Book> getAll(@RequestParam(value = "authorId", required = false) Integer authorId) {
+        List<Book> booksToReturn = new ArrayList<>();
+        if (authorId != null) {
+            for (Book book : books) {
+                if (book.getAuthors().contains(authorId)) {
+                    booksToReturn.add(book);
+                }
+            }
+        } else {
+            booksToReturn = books;
+        }
+        return booksToReturn;
     }
 
     @GetMapping("/{id}")
@@ -97,8 +111,8 @@ public class BookController {
     public ResponseEntity<String> update(@PathVariable int id, @RequestBody Book book) {
         ResponseEntity<String> response;
         String errorMessage = null;
-        Book existingbook = findBookById(id);
-        if (existingbook == null) {
+        Book existingBook = findBookById(id);
+        if (existingBook == null) {
             errorMessage = "No book with id " + id + " found.";
         }
         if (book == null || !book.isValid()) {
@@ -108,7 +122,7 @@ public class BookController {
         }
 
         if (errorMessage == null) {
-            books.remove(existingbook);
+            books.remove(existingBook);
             books.add(book);
             response = new ResponseEntity<>(HttpStatus.OK);
         } else {
