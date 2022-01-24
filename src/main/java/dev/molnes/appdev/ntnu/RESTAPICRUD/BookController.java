@@ -4,10 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/books")
@@ -41,19 +39,22 @@ public class BookController {
         books.add(book3);
     }
 
+    /**
+     * Gets all the books in the list of books. If there is an authorId and/or
+     * minPages value present, it will also filter based on those values, and return
+     * books matching the input.
+     * @param authorId the authorId of the author you want to filter books by.
+     * @param minPages the minimum amount of pages you want in the books that are
+     *                 returned.
+     * @return A list of the books matching the filter input. If there are not filtering
+     *         input, it will return all books.
+     */
     @GetMapping("")
-    public List<Book> getAll(@RequestParam(value = "authorId", required = false) Integer authorId) {
-        List<Book> booksToReturn = new ArrayList<>();
-        if (authorId != null) {
-            for (Book book : books) {
-                if (book.getAuthors().contains(authorId)) {
-                    booksToReturn.add(book);
-                }
-            }
-        } else {
-            booksToReturn = books;
-        }
-        return booksToReturn;
+    public List<Book> getAll(@RequestParam(value = "authorId", required = false) Integer authorId, @RequestParam(value = "minPages", required = false) Integer minPages) {
+        return books.stream()
+                .filter(book -> (authorId == null || book.hasAuthor(authorId)))
+                .filter(book -> (minPages == null || book.getNumberOfPages() >= minPages))
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
