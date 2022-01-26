@@ -3,6 +3,7 @@ package dev.molnes.appdev.ntnu.RESTAPICRUD;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -59,6 +60,7 @@ public class AuthorController {
     }
 
     @DeleteMapping("/{id}")
+    @ApiIgnore
     public ResponseEntity<String> delete(@PathVariable int id) {
         ResponseEntity<String> response;
         Author authorToDelete = findAuthorById(id);
