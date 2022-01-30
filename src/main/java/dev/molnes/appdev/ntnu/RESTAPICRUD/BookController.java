@@ -1,8 +1,11 @@
 package dev.molnes.appdev.ntnu.RESTAPICRUD;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -50,7 +53,13 @@ public class BookController {
      *         input, it will return all books.
      */
     @GetMapping("")
-    public List<Book> getAll(@RequestParam(value = "authorId", required = false) Integer authorId, @RequestParam(value = "minPages", required = false) Integer minPages) {
+    @ApiOperation(value = "Get all books, with or without search filters",
+            notes = "Get all books in the collection, or provide parameters to limit the search to books matching the filter.",
+            response = Book.class,
+            responseContainer = "List")
+    public List<Book> getAll(@ApiParam(value = "authorId of the author you want get books by")
+            @RequestParam(value = "authorId", required = false) Integer authorId, @ApiParam(value = "Minimum number of pages in the books you want to return")
+            @RequestParam(value = "minPages", required = false) Integer minPages) {
         return books.stream()
                 .filter(book -> (authorId == null || book.hasAuthor(authorId)))
                 .filter(book -> (minPages == null || book.getNumberOfPages() >= minPages))
@@ -58,7 +67,10 @@ public class BookController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Book> getBook(@PathVariable Integer id) {
+    @ApiOperation(value = "Find book by id",
+            notes = "Provide an id to look up specific contact from the list of books",
+            response = Book.class)
+    public ResponseEntity<Book> getBook(@ApiParam(value = "The id of the book you want to search for") @PathVariable Integer id) {
         ResponseEntity<Book> response;
         Book book = findBookById(id);
         if (book != null) {
@@ -83,19 +95,22 @@ public class BookController {
     }
 
     @PostMapping
+    @ApiOperation(value = "Add a book to the list of books",
+            notes = "Provide a book object that you want to add to the List of books")
     public ResponseEntity<String> add(@RequestBody Book book) {
         ResponseEntity<String> response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         if (book != null && book.isValid()) {
             Book existingBook = findBookById(book.getId());
             if (existingBook == null) {
                 books.add(book);
-                response = new ResponseEntity<>(HttpStatus.OK);
+                response = new ResponseEntity<>(HttpStatus.CREATED);
             }
         }
         return response;
     }
 
     @DeleteMapping("/{id}")
+    @ApiIgnore
     public ResponseEntity<String> delete(@PathVariable int id) {
         ResponseEntity<String> response;
         Book book = findBookById(id);
@@ -130,5 +145,10 @@ public class BookController {
             response = new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
         }
         return response;
+    }
+
+    @GetMapping("/count")
+    public int getNumberOfBooks() {
+        return books.size();
     }
 }
