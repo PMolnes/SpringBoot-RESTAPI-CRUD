@@ -2,7 +2,6 @@ package dev.molnes.appdev.ntnu.RESTAPICRUD;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -104,7 +103,7 @@ public class BookController {
             Book existingBook = findBookById(book.getId());
             if (existingBook == null) {
                 books.add(book);
-                response = new ResponseEntity<>(HttpStatus.OK);
+                response = new ResponseEntity<>(HttpStatus.CREATED);
             }
         }
         return response;
@@ -146,5 +145,10 @@ public class BookController {
             response = new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
         }
         return response;
+    }
+
+    @GetMapping("/count")
+    public int getNumberOfBooks() {
+        return books.size();
     }
 }
